@@ -9,7 +9,7 @@ const tareaSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    completada: {
+    estado: {
         type: Boolean,
         required: true,
     },

@@ -1,8 +1,12 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = 3000;
 
 require('./db'); // Importa la conexión a la base de datos
+
+// Middleware para habilitar CORS
+app.use(cors());
 
 // Middleware para analizar el cuerpo de las solicitudes en formato JSON
 app.use(express.json());

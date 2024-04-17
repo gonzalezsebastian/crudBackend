@@ -13,12 +13,12 @@ exports.obtenerTodasLasTareas = async (req, res) => {
 // Función para crear una nueva tarea
 exports.crearTarea = async (req, res) => {
     try {
-        const { nombre, descripcion, completada, prioridad } = req.body;
+        const { nombre, descripcion, estado, prioridad } = req.body;
 
         const nuevaTarea = new Tarea({
             nombre,
             descripcion,
-            completada,
+            estado,
             prioridad
         });
 
@@ -47,7 +47,7 @@ exports.obtenerTareaPorId = async (req, res) => {
 // Función para actualizar una tarea por su ID con uno o más campos
 exports.actualizarTarea = async (req, res) => {
     const campos = req.body; // Tomar los campos directamente del cuerpo de la solicitud
-    const camposPermitidos = ['nombre', 'descripcion', 'completada', 'prioridad'];
+    const camposPermitidos = ['nombre', 'descripcion', 'estado', 'prioridad'];
 
     // Verificar si se proporcionaron campos para actualizar
     if (!campos || Object.keys(campos).length === 0) {
@@ -84,7 +84,6 @@ exports.eliminarTarea = async (req, res) => {
             return res.status(404).json({ message: 'Tarea no encontrada' });
         }
         res.status(204).json({ message: 'Tarea eliminada correctamente' });
-        res.status(204).send();
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
