@@ -46,7 +46,7 @@ exports.obtenerTareaPorId = async (req, res) => {
 
 // Función para actualizar una tarea por su ID con uno o más campos
 exports.actualizarTarea = async (req, res) => {
-    const campos = req.body; // Tomar los campos directamente del cuerpo de la solicitud
+    const campos = req.body;
     const camposPermitidos = ['nombre', 'descripcion', 'estado', 'prioridad'];
 
     // Verificar si se proporcionaron campos para actualizar
@@ -55,15 +55,22 @@ exports.actualizarTarea = async (req, res) => {
     }
 
     // Verificar si los campos proporcionados son válidos
-    for (const campo in campos) {
-        if (!camposPermitidos.includes(campo)) {
-            return res.status(400).json({ message: `El campo '${campo}' no es válido` });
-        }
+    const camposInvalidos = Object.keys(campos).filter(campo => !camposPermitidos.includes(campo));
+    if (camposInvalidos.length > 0) {
+        return res.status(400).json({ message: `Los siguientes campos no son válidos: ${camposInvalidos.join(', ')}` });
     }
 
     try {
+        // Construir un objeto con los campos válidos para actualizar
+        const camposActualizados = {};
+        camposPermitidos.forEach(campo => {
+            if (campos.hasOwnProperty(campo)) {
+                camposActualizados[campo] = campos[campo];
+            }
+        });
+
         // Actualizar la tarea con los campos proporcionados
-        const tarea = await Tarea.findByIdAndUpdate(req.params.id, campos, { new: true });
+        const tarea = await Tarea.findByIdAndUpdate(req.params.id, camposActualizados, { new: true });
 
         // Verificar si se encontró la tarea
         if (!tarea) {
